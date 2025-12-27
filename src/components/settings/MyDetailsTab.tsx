@@ -91,8 +91,7 @@ export default function MyDetailsTab() {
   const updateAvatarMutation = useMutation({
     mutationFn: avatarUpload,
     onSuccess: (data) => {
-      setAvatarImage(data?.data?.avatar);
-
+      setAvatarImage(data?.data?.avatar?.url);
       toast.success("Avatar updated");
     },
     onError: () => {
@@ -103,7 +102,7 @@ export default function MyDetailsTab() {
   const updateCoverMutation = useMutation({
     mutationFn: coverUpload,
     onSuccess: (data) => {
-      setHeaderImage(data?.data?.coverImage);
+      setHeaderImage(data?.data?.coverImage?.url);
       toast.success("Cover updated");
     },
     onError: () => {
@@ -174,7 +173,7 @@ export default function MyDetailsTab() {
       <div className="relative group">
         <div className="w-full h-48 md:h-64 rounded-xl overflow-hidden bg-gradient-to-r from-pink-500 via-orange-400 to-cyan-400 relative">
           <img
-            src={headerImage ?? user?.coverImage}
+            src={headerImage ?? user?.coverImage?.url}
             alt="Cover"
             className="w-full h-full object-cover opacity-80"
           />
@@ -199,7 +198,7 @@ export default function MyDetailsTab() {
         <div className="flex bg-black -mt-12 mx-4 md:ml-8 relative z-10 p-4 rounded-xl items-start gap-4 max-w-2xl">
           <div className="relative shrink-0">
             <img
-              src={avatarImage ?? user?.avatar}
+              src={avatarImage ?? user?.avatar?.url}
               alt="Avatar"
               className="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-black object-cover"
             />

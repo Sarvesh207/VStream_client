@@ -31,7 +31,7 @@ const refreshToken = async () => {
 };
 
 const changePassword = async (data) => {
-  const res = await client.put("/users/change-password", data);
+  const res = await client.post("/users/change-password", data);
   return res.data;
 };
 

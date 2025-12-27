@@ -48,6 +48,7 @@ export default function Profile() {
       </div>
     );
   }
+  
 
   return (
     <div className="min-h-screen bg-black text-white w-full">
@@ -57,7 +58,7 @@ export default function Profile() {
         <div className="flex flex-col md:flex-row items-center md:items-end gap-4 md:gap-6">
           <div className="relative group">
             <img
-              src={user?.avatar}
+              src={user?.avatar?.url}
               alt="Profile"
               className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-black object-cover"
             />

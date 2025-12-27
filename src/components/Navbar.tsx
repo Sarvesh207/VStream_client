@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
-import { Menu, Search, Video, EllipsisVertical, User, LogOut, Settings } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import type { RootState } from '../store/store';
-import { removeUser } from '../store/slices/userSlice';
-
+import React, { useState } from "react";
+import {
+  Menu,
+  Search,
+  Video,
+  EllipsisVertical,
+  User,
+  LogOut,
+  Settings,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "../store/store";
+import { removeUser } from "../store/slices/userSlice";
+import { loginUser, logoutUser } from "../api/user.api";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 interface NavbarProps {
-    toggleSidebar: () => void;
+  toggleSidebar: () => void;
 }
 
 export default function Navbar({ toggleSidebar }: NavbarProps) {
@@ -15,18 +25,31 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
   const navigate = useNavigate();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const handleLogout = () => {
-    dispatch(removeUser());
-     setIsProfileOpen(false);
-     navigate('/login');
-  };
+  const userLogOutMutation = useMutation({
+    mutationFn: logoutUser,
+    onSuccess: (data) => {
+      dispatch(removeUser());
+      setIsProfileOpen(false);
+      navigate("/");
+      toast.success(data?.message ?? "User Logout");
+    },
+    onError: (error) => {
+      dispatch(removeUser());
+      setIsProfileOpen(false);
+      toast.error(error.message);
+    },
+  });
+
+  function handleLogout() {
+    userLogOutMutation.mutate();
+  }
 
   return (
     <nav className="fixed top-0 z-50 w-full bg-black border-b border-gray-800">
       <div className="flex items-center justify-between px-4 py-3">
         {/* Left: Logo & Menu */}
         <div className="flex items-center gap-4">
-          <button 
+          <button
             onClick={toggleSidebar}
             className="p-2 text-gray-400 rounded-full hover:bg-gray-800"
           >
@@ -34,7 +57,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
           </button>
           <Link to="/" className="flex items-center gap-2">
             <div className="flex items-center justify-center w-10 h-10 text-white bg-gradient-to-br from-purple-600 to-blue-500 rounded-full">
-               <Video className="w-5 h-5 fill-current" />
+              <Video className="w-5 h-5 fill-current" />
             </div>
             <span className="hidden text-xl font-bold tracking-tight text-white sm:block font-display">
               VStream
@@ -58,8 +81,8 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
 
         {/* Right: Actions */}
         <div className="flex items-center gap-2 sm:gap-4">
-           {/* Mobile Search Icon */}
-           <button className="p-2 text-gray-400 rounded-full md:hidden hover:bg-gray-800">
+          {/* Mobile Search Icon */}
+          <button className="p-2 text-gray-400 rounded-full md:hidden hover:bg-gray-800">
             <Search className="w-6 h-6" />
           </button>
 
@@ -68,70 +91,77 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
           </button>
 
           {user ? (
-             <div className="relative">
-                <button 
-                  onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-800 rounded-full focus:ring-2 focus:ring-purple-500 focus:outline-none"
-                >
-                   {user.avatar ? (
-                     <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
-                   ) : (
-                      <User className="w-6 h-6 text-gray-400" />
-                   )}
-                </button>
-                
-                {isProfileOpen && (
-                  <div className="absolute right-0 z-50 w-48 mt-2 my-2 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600">
-                    <div className="px-4 py-3" role="none">
-                      <p className="text-sm text-gray-900 dark:text-white" role="none">
-                        {user.fullName || user.username}
-                      </p>
-                      <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                        {user.email}
-                      </p>
-                    </div>
-                    <ul className="py-1" role="none">
-                      <li>
-                        <Link 
-                            to="/profile" 
-                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
-                            onClick={() => setIsProfileOpen(false)}
-                        >
-                            <User className='w-4 h-4 mr-2' />
-                          Profile
-                        </Link>
-                      </li>
-                      <li>
-                         <Link 
-                             to="/settings" 
-                             className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
-                             onClick={() => setIsProfileOpen(false)}
-                         >
-                            <Settings className='w-4 h-4 mr-2' />
-                             Settings
-                         </Link>
-                      </li>
-                      <li>
-                        <button 
-                           onClick={handleLogout}
-                            className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white text-left"
-                        >
-                            <LogOut className='w-4 h-4 mr-2' />
-                          Sign out
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
+            <div className="relative">
+              <button
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className="flex items-center justify-center w-10 h-10 overflow-hidden  rounded-full focus:ring-2 focus:ring-purple-500 focus:outline-none"
+              >
+                {user.avatar ? (
+                  <img
+                    src={user.avatar?.url}
+                    alt={user.username}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <User className="w-6 h-6 text-gray-400" />
                 )}
-             </div>
+              </button>
+
+              {isProfileOpen && (
+                <div className="absolute right-0 z-50 w-64 mt-2 origin-top-right bg-black border border-gray-800 rounded-xl shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                  <div className="px-4 py-4 border-b border-gray-800">
+                    <p className="text-sm font-semibold text-white truncate">
+                      {user.fullName || user.username}
+                    </p>
+                    <p className="text-xs font-medium text-gray-400 truncate mt-1">
+                      {user.email}
+                    </p>
+                  </div>
+
+                  <div className="p-2 space-y-1">
+                    <Link
+                      to="/profile"
+                      className="flex items-center px-3 py-2.5 text-sm font-medium text-gray-400 rounded-lg border border-transparent hover:bg-gray-900 hover:text-white hover:border-gray-800 transition-all duration-200 group"
+                      onClick={() => setIsProfileOpen(false)}
+                    >
+                      <User className="w-5 h-5 mr-3 group-hover:text-white transition-colors" />
+                      Profile
+                    </Link>
+
+                    <Link
+                      to="/settings"
+                      className="flex items-center px-3 py-2.5 text-sm font-medium text-gray-400 rounded-lg border border-transparent hover:bg-gray-900 hover:text-white hover:border-gray-800 transition-all duration-200 group"
+                      onClick={() => setIsProfileOpen(false)}
+                    >
+                      <Settings className="w-5 h-5 mr-3 group-hover:text-white transition-colors" />
+                      Settings
+                    </Link>
+
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center w-full px-3 py-2.5 text-sm font-medium text-gray-400 rounded-lg border border-transparent hover:bg-gray-900 hover:text-white hover:border-gray-800 transition-all duration-200 group text-left"
+                    >
+                      <LogOut className="w-5 h-5 mr-3 group-hover:text-white transition-colors" />
+                      Sign out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           ) : (
             <>
-              <Link to="/login" className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors rounded-full hover:bg-gray-800">
+              <Link
+                to="/login"
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors rounded-full hover:bg-gray-800"
+              >
                 <User className="w-5 h-5" />
                 <span className="hidden sm:inline">Log in</span>
               </Link>
-              
-              <Link to="/register" className="px-4 py-2 text-sm font-medium text-black transition-colors bg-purple-500 rounded-full hover:bg-purple-400">
+
+              <Link
+                to="/register"
+                className="px-4 py-2 text-sm font-medium text-black transition-colors bg-purple-500 rounded-full hover:bg-purple-400"
+              >
                 Sign up
               </Link>
             </>
