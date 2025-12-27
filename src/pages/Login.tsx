@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Video } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { loginUser } from '../api/user.api';
+import { setAccessToken } from '../api/axiosClient';
 import { useMutation } from '@tanstack/react-query';
 import { Bounce, toast } from 'react-toastify';
 
@@ -24,8 +25,10 @@ export default function Login() {
     const loginMutation = useMutation({
         mutationFn: loginUser,
         onSuccess: (data) => {
-            console.log("Login success", data);
             dispatch(addUser(data?.data?.user));
+            if (data?.data?.accessToken) {
+                setAccessToken(data.data.accessToken);
+            }
             navigate('/');
              toast.success('Login successful', {
                 position: "bottom-right",
@@ -40,7 +43,6 @@ export default function Login() {
             });
         },
         onError: (error: any) => {
-            console.error("Login error", error);
              toast.error(error?.response?.data?.message || 'Login failed', {
                 position: "bottom-right",
                 autoClose: 2000,

@@ -1,6 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import Layout from './components/Layout';
+import AuthLayout from './components/auth/AuthLayout';
+import ProtectedRoutes from './components/auth/ProtectedRoutes';
+import PublicRoutes from './components/auth/PublicRoutes';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -25,46 +28,58 @@ function App() {
     <QueryClientProvider client={queryClient}>
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/" element={
-          <Layout>
-            <Home />
-          </Layout>
-        } />
-        <Route path="/video/:id" element={
-          <Layout>
-            <VideoDetail />
-          </Layout>
-        } />
-        <Route path="/community" element={
-          <Layout>
-            <Community />
-          </Layout>
-        } />
-        <Route path="/profile" element={
-          <Layout>
-            <Profile />
-          </Layout>
-        } />
-        <Route path="/dashboard" element={
-          <Layout>
-            <Dashboard />
-          </Layout>
-        } />
-        <Route path="/settings" element={
-          <Layout>
-            <Settings />
-          </Layout>
-        } />
-        {/* Add more routes wrapped in Layout as needed */}
-         <Route path="*" element={
-          <Layout>
-            <div className="flex items-center justify-center h-64">
-              <h2 className="text-2xl font-bold text-gray-500">Page Not Found</h2>
-            </div>
-          </Layout>
-        } />
+        <Route element={<AuthLayout><Outlet /></AuthLayout>}>
+            {/* Public Routes - Only accessible when NOT logged in */}
+            <Route element={<PublicRoutes />}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+            </Route>
+
+            {/* Protected Routes - Only accessible when logged in */}
+            <Route element={<ProtectedRoutes />}>
+                <Route path="/community" element={
+                  <Layout>
+                    <Community />
+                  </Layout>
+                } />
+                <Route path="/profile" element={
+                  <Layout>
+                    <Profile />
+                  </Layout>
+                } />
+                <Route path="/dashboard" element={
+                  <Layout>
+                    <Dashboard />
+                  </Layout>
+                } />
+                <Route path="/settings" element={
+                  <Layout>
+                    <Settings />
+                  </Layout>
+                } />
+            </Route>
+
+            {/* Open Routes - Accessible by anyone, but Layout might show different nav items */}
+             <Route path="/" element={
+              <Layout>
+                <Home />
+              </Layout>
+            } />
+            <Route path="/video/:id" element={
+              <Layout>
+                <VideoDetail />
+              </Layout>
+            } />
+
+             {/* Catch all */}
+             <Route path="*" element={
+              <Layout>
+                <div className="flex items-center justify-center h-64">
+                  <h2 className="text-2xl font-bold text-gray-500">Page Not Found</h2>
+                </div>
+              </Layout>
+            } />
+        </Route>
       </Routes>
     </Router>
     <ToastContainer

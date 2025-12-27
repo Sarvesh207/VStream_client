@@ -54,7 +54,6 @@ export default function UploadVideoModal({ isOpen, onClose, onUploadSuccess }: U
         if (onUploadSuccess) onUploadSuccess();
         onClose();
     } catch (error) {
-        console.error("Upload failed", error);
     } finally {
         setIsUploading(false);
     }
