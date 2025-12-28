@@ -1,23 +1,17 @@
-import React, { useEffect, useState } from "react";
-import {
-  Upload,
-  Camera,
-  Bold,
-  Italic,
-  Link as LinkIcon,
-  List,
-  AlertCircle,
-  Loader2,
-} from "lucide-react";
-import { updateProfile, uploadImage } from "../../api/settings";
 import { useMutation } from "@tanstack/react-query";
-import { updateUser, avatarUpload, coverUpload } from "../../api/user.api";
-import { useForm } from "react-hook-form";
-import { Bounce, toast } from "react-toastify";
-import { useSelector } from "react-redux";
-import type { RootState } from "@reduxjs/toolkit/query";
 import { AxiosError } from "axios";
+import {
+  Camera,
+  Loader2,
+  Upload
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
+import { avatarUpload, coverUpload, updateUser } from "../../api/user.api";
+import type { RootState } from "../../store/store";
 
 type UpdateUserData = {
   firstName: string;
@@ -26,11 +20,12 @@ type UpdateUserData = {
   username: string;
   description: string;
 };
-export default function MyDetailsTab() {
-  const [headerImage, setHeaderImage] = useState();
-  const [avatarImage, setAvatarImage] = useState();
 
-  const user = useSelector((store) => store.user);
+export default function MyDetailsTab() {
+  const [headerImage, setHeaderImage] = useState<string | undefined>();
+  const [avatarImage, setAvatarImage] = useState<string | undefined>();
+
+  const user = useSelector((store: RootState) => store.user);
   const navigate = useNavigate();
 
   useEffect(() => {

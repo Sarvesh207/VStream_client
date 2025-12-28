@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { Video } from "lucide-react";
 import { useForm } from "react-hook-form";

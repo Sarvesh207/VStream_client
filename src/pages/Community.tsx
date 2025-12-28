@@ -1,5 +1,4 @@
-import React from 'react';
-import { Heart, MessageSquare, Share, MoreHorizontal } from 'lucide-react';
+import { Heart, MessageSquare, MoreHorizontal, Share } from 'lucide-react';
 
 export default function Community() {
   const posts = [

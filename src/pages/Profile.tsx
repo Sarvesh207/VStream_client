@@ -1,22 +1,24 @@
-import React, { useState } from "react";
-import { Edit2, Grid, List, CheckCircle, Play, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Edit2, CheckCircle, Play, Plus } from "lucide-react";
 import UploadVideoModal from "../components/UploadVideoModal";
 import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import { getUserChannelData } from "../api/user.api";
 import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import type { RootState } from "../store/store";
+import type { Video } from "../api/types";
 
 export default function Profile() {
   const [activeTab, setActiveTab] = useState("Videos");
   const [activeFilter, setActiveFilter] = useState("Previously uploaded");
-  const user = useSelector((state: any) => state.user);
+  const user = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
   const tabs = ["Videos", "Playlist", "Tweets", "Following"];
   const videoFilters = ["Previously uploaded", "Oldest", "Item"];
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
-  const [videos, setVideos] = useState<any[]>([]);
+  const [videos, setVideos] = useState<Video[]>([]);
 
   const {
     data: userChannelData,
@@ -24,14 +26,16 @@ export default function Profile() {
     error: userChannelError,
   } = useQuery({
     queryKey: ["userChannelData", user?.username],
-    queryFn: () => getUserChannelData(user?.username),
+    queryFn: () => getUserChannelData(user?.username || ""),
     enabled: !!user?.username,
+  });
+  useEffect(() => {
+    setVideos([]);
   });
 
   function handleEditClick() {
-    navigate("/settings")
+    navigate("/settings");
   }
-
 
   if (userChannelError) {
     return (
@@ -48,7 +52,14 @@ export default function Profile() {
       </div>
     );
   }
-  
+
+  if (!userChannelData) {
+    return (
+      <div>
+        <p>No data found</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-white w-full">
@@ -158,10 +169,14 @@ export default function Profile() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {videos.map((video) => (
-                <div key={video.id} className="group cursor-pointer">
+                <div key={video._id} className="group cursor-pointer">
                   <div className="relative aspect-video rounded-xl overflow-hidden mb-3">
                     <img
-                      src={video.thumbnail}
+                      src={
+                        typeof video.thumbnail === "string"
+                          ? video.thumbnail
+                          : video.thumbnail?.url
+                      }
                       alt={video.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
@@ -171,7 +186,7 @@ export default function Profile() {
                     {video.title}
                   </h3>
                   <div className="text-xs text-gray-400">
-                    {video.views} • {video.time}
+                    {video.views} • {video.createdAt}
                   </div>
                 </div>
               ))}
@@ -183,8 +198,7 @@ export default function Profile() {
       <UploadVideoModal
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
-        onUploadSuccess={() => {
-        }}
+        onUploadSuccess={() => {}}
       />
 
       {activeTab !== "Videos" && (

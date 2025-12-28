@@ -1,4 +1,3 @@
-import React from 'react';
 import { Home, Clock, Folder, Users } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 

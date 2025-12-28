@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { changePassword } from "../../api/user.api";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";
-import type { UpdatePasswordData } from "../../api/settings";
+import type { ChangePasswordData } from "../../api/types";
 import type { AxiosError } from "axios";
 
 type ChangePasswordForm = {
@@ -19,7 +19,7 @@ export default function PasswordTab() {
     register,
     handleSubmit,
     reset,
-    formState: { isDirty, errors },
+    formState: { isDirty },
   } = useForm<ChangePasswordForm>({
     defaultValues: {
       oldPassword: "",
@@ -39,7 +39,7 @@ export default function PasswordTab() {
     },
   });
 
-  const onSubmit = (data: UpdatePasswordData) => {
+  const onSubmit = (data: ChangePasswordData) => {
     updatePasswordMutation.mutate(data);
   };
 

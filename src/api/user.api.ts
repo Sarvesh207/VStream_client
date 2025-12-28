@@ -1,46 +1,56 @@
 import client from "./axiosClient";
+import type {
+  ApiResponse,
+  AuthResponse,
+  ChangePasswordData,
+  LoginData,
+  UpdateAccountData,
+  User,
+  UserChannelProfile,
+  Video,
+} from "./types";
 
-const loginUser = async (data) => {
+const loginUser = async (data: LoginData): Promise<ApiResponse<AuthResponse>> => {
   const res = await client.post("/users/login", data);
   return res.data;
 };
 
-const registerUser = async (data) => {
+const registerUser = async (data: FormData): Promise<ApiResponse<{ user: User }>> => {
   const res = await client.post("/users/register", data);
   return res.data;
 };
 
-const getUser = async () => {
+const getUser = async (): Promise<ApiResponse<User>> => {
   const res = await client.get("/users/current-user");
   return res.data;
 };
 
-const logoutUser = async () => {
+const logoutUser = async (): Promise<ApiResponse<{}>> => {
   const res = await client.post("/users/logout");
   return res.data;
 };
 
-const updateUser = async (data) => {
+const updateUser = async (data: UpdateAccountData): Promise<ApiResponse<User>> => {
   const res = await client.patch("/users/update-account", data);
   return res.data;
 };
 
-const refreshToken = async () => {
+const refreshToken = async (): Promise<ApiResponse<AuthResponse>> => {
   const res = await client.post("/users/refresh-token");
   return res.data;
 };
 
-const changePassword = async (data) => {
+const changePassword = async (data: ChangePasswordData): Promise<ApiResponse<{}>> => {
   const res = await client.post("/users/change-password", data);
   return res.data;
 };
 
-const forgotPassword = async (data) => {
+const forgotPassword = async (data: { email: string }): Promise<ApiResponse<{}>> => {
   const res = await client.post("/users/forgot-password", data);
   return res.data;
 };
 
-const avatarUpload = async (file: File) => {
+const avatarUpload = async (file: File): Promise<ApiResponse<User>> => {
   const formData = new FormData();
   formData.append("avatar", file);
 
@@ -53,7 +63,7 @@ const avatarUpload = async (file: File) => {
   return res.data;
 };
 
-const coverUpload = async (file: File) => {
+const coverUpload = async (file: File): Promise<ApiResponse<User>> => {
   const formData = new FormData();
   formData.append("coverImage", file);
 
@@ -66,17 +76,21 @@ const coverUpload = async (file: File) => {
   return res.data;
 };
 
-const getHistory = async () => {
+const getHistory = async (): Promise<ApiResponse<Video[]>> => {
   const res = await client.get("/users/history");
   return res.data;
 };
 
-const getUserChannelProfile = async (username: string) => {
+const getUserChannelProfile = async (
+  username: string
+): Promise<ApiResponse<UserChannelProfile>> => {
   const res = await client.get(`/users/c/${username}`);
   return res.data;
 };
 
-const getUserChannelData = async (username: string) => {
+const getUserChannelData = async (
+  username: string
+): Promise<UserChannelProfile> => {
   const res = await client.get(`/users/c/${username}`);
   return res.data.data;
 };

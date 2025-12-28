@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Menu,
   Search,
@@ -12,7 +12,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../store/store";
 import { removeUser } from "../store/slices/userSlice";
-import { loginUser, logoutUser } from "../api/user.api";
+import { logoutUser } from "../api/user.api";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 interface NavbarProps {

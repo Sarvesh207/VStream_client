@@ -1,4 +1,3 @@
-import React from 'react';
 import { Home, ThumbsUp, History, Video, Folder, Users, CircleHelp, Settings } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 

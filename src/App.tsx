@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import Layout from './components/Layout';
 import AuthLayout from './components/auth/AuthLayout';
@@ -12,20 +11,16 @@ import Community from './pages/Community';
 import Profile from './pages/Profile';
 import Dashboard from './pages/Dashboard';
 import Settings from './pages/Settings';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
 import { Bounce, ToastContainer } from 'react-toastify'
 import { Provider } from 'react-redux'
 import store from './store/store'
 
-const queryClient = new QueryClient()
+
 
 function App() {
   return (
     <Provider store={store}>
-    <QueryClientProvider client={queryClient}>
+    
     <Router>
       <Routes>
         <Route element={<AuthLayout><Outlet /></AuthLayout>}>
@@ -95,7 +90,6 @@ function App() {
                 theme="light"
                 transition={Bounce}
             />
-    </QueryClientProvider>
     </Provider>
   );
 }
