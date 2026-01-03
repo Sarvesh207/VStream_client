@@ -3,11 +3,6 @@ import {
   Heart,
   ListPlus,
   Send,
-  MessageSquare,
-  ThumbsUp,
-  ThumbsDown,
-  Play,
-  Share2
 } from "lucide-react";
 import { useParams } from "react-router-dom";
 import SaveToPlaylistModal from "../components/SaveToPlaylistModal";
@@ -29,10 +24,9 @@ export default function VideoDetail() {
   if (isLoading) return <div className="flex items-center justify-center p-20 text-gray-400">Loading...</div>;
   if (isError || !video) return <div className="flex items-center justify-center p-20 text-red-400">Video unavailable.</div>;
 
-  const { title, videoFile, views, createdAt, description, owner, thumbnail } = video;
+  const { title, videoFile, views, createdAt, description, owner } = video;
 
   const videoUrl = typeof videoFile === "string" ? videoFile : videoFile?.url;
-  const thumbnailUrl = typeof thumbnail === "string" ? thumbnail : thumbnail?.url;
   const ownerAvatar = typeof owner === "string" ? undefined : owner?.avatar?.url;
   const ownerUsername = typeof owner === "string" ? undefined : owner?.username || "Unknown";
   const ownerFullName = typeof owner === "string" ? undefined : owner?.fullName || ownerUsername;
