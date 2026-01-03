@@ -72,14 +72,14 @@ export default function Register() {
         to="/"
         className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
       >
-        <div className="bg-red-600 text-white p-1 rounded-lg mr-2">
+        <div className="bg-white text-black p-1 rounded-lg mr-2">
           <Video size={24} fill="currentColor" />
         </div>
         VStream
       </Link>
-      <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+      <div className="w-full bg-black rounded-xl shadow border border-white/5 md:mt-0 sm:max-w-md xl:p-0">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-          <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+          <h1 className="text-xl font-bold leading-tight tracking-tight text-white md:text-2xl">
             Create an account
           </h1>
           <form
@@ -89,14 +89,14 @@ export default function Register() {
             <div>
               <label
                 htmlFor="name"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                className="block mb-2 text-sm font-medium text-gray-300"
               >
                 Your Name
               </label>
               <input
                 type="text"
                 id="name"
-                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="bg-[#1a1a1a] border border-gray-800 text-white sm:text-sm rounded-lg focus:ring-1 focus:ring-white/20 focus:border-white/20 block w-full p-2.5 placeholder-gray-500"
                 placeholder="John Doe"
                 {...register("name", { required: "Name is required" })}
               />
@@ -109,14 +109,14 @@ export default function Register() {
             <div>
               <label
                 htmlFor="username"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                className="block mb-2 text-sm font-medium text-gray-300"
               >
                 Username
               </label>
               <input
                 type="text"
                 id="username"
-                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="bg-[#1a1a1a] border border-gray-800 text-white sm:text-sm rounded-lg focus:ring-1 focus:ring-white/20 focus:border-white/20 block w-full p-2.5 placeholder-gray-500"
                 placeholder="johndoe"
                 {...register("username", { required: "Username is required" })}
               />
@@ -129,14 +129,14 @@ export default function Register() {
             <div>
               <label
                 htmlFor="email"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                className="block mb-2 text-sm font-medium text-gray-300"
               >
                 Your email
               </label>
               <input
                 type="email"
                 id="email"
-                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="bg-[#1a1a1a] border border-gray-800 text-white sm:text-sm rounded-lg focus:ring-1 focus:ring-white/20 focus:border-white/20 block w-full p-2.5 placeholder-gray-500"
                 placeholder="name@company.com"
                 {...register("email", {
                   required: "Email is required",
@@ -155,7 +155,7 @@ export default function Register() {
             <div>
               <label
                 htmlFor="password"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                className="block mb-2 text-sm font-medium text-gray-300"
               >
                 Password
               </label>
@@ -163,7 +163,7 @@ export default function Register() {
                 type="password"
                 id="password"
                 placeholder="••••••••"
-                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="bg-[#1a1a1a] border border-gray-800 text-white sm:text-sm rounded-lg focus:ring-1 focus:ring-white/20 focus:border-white/20 block w-full p-2.5 placeholder-gray-500"
                 {...register("password", {
                   required: "Password is required",
                   minLength: {
@@ -181,7 +181,7 @@ export default function Register() {
 
             <button
               type="submit"
-              className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              className="w-full text-white bg-[#2a2a2a] hover:bg-[#3f3f3f] font-semibold rounded-xl text-sm px-5 py-3 text-center transition-all shadow-lg shadow-black/20"
             >
               Create an account
             </button>
@@ -189,7 +189,7 @@ export default function Register() {
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                className="font-medium text-white hover:underline decoration-white/20 hover:decoration-white"
               >
                 Login here
               </Link>

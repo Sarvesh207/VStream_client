@@ -117,7 +117,7 @@ export default function PasswordTab() {
           <button
             type="submit"
             disabled={!isDirty || updatePasswordMutation.isPending}
-            className="px-4 py-2 bg-[#a855f7] hover:bg-[#9333ea] text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-[#2a2a2a] hover:bg-[#3f3f3f] text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
           >
             {updatePasswordMutation.isPending
               ? "Updating..."

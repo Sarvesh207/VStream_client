@@ -221,7 +221,7 @@ export default function MyDetailsTab() {
               </div>
               <button
                 onClick={() => navigate("/profile")}
-                className="hidden md:block bg-[#a855f7] hover:bg-[#9333ea] text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                className="hidden md:block bg-[#2a2a2a] hover:bg-[#3f3f3f] text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors"
               >
                 View profile
               </button>
@@ -376,7 +376,7 @@ export default function MyDetailsTab() {
             <button
               type="submit"
               disabled={!isDirty || updateUserMutation.isPending}
-              className="px-4 py-2 bg-[#a855f7] hover:bg-[#9333ea] text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+              className="px-4 py-2 bg-[#2a2a2a] hover:bg-[#3f3f3f] text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
             >
               {updateUserMutation.isPending ? "Saving..." : "Save changes"}
             </button>

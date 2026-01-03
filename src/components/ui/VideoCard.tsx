@@ -2,6 +2,8 @@ import { EllipsisVertical } from "lucide-react";
 import type { Video } from "../../api/types";
 import { timeAgo } from "../../utils/timeAgo";
 
+import { formatDuration } from "../../utils/formatDuration";
+
 function VideoCard({ video }: { video: Video }) {
   const thumbnail =
     typeof video.thumbnail === "string" ? video.thumbnail : video.thumbnail?.url;
@@ -11,45 +13,43 @@ function VideoCard({ video }: { video: Video }) {
   const fullName = owner?.fullName;
 
   return (
-    <>
-      <div className="relative mb-3 overflow-hidden bg-gray-900 rounded-xl aspect-video">
+    <div className="group cursor-pointer">
+      <div className="relative mb-3 overflow-hidden rounded-xl aspect-video bg-[#1a1a1a]">
         <img
           src={thumbnail}
           alt={video?.title}
-          className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+          className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute bottom-2 right-2 rounded bg-black/60 backdrop-blur-sm px-1.5 py-0.5 text-xs font-medium text-white shadow-md">
-          {video?.duration ?? "0:00"}
+        <div className="absolute bottom-1.5 right-1.5 rounded px-1.5 py-0.5 text-xs font-medium bg-black/80 text-white shadow-sm backdrop-blur-[2px]">
+          {formatDuration(video?.duration)}
         </div>
       </div>
-      <div className="flex gap-3">
+      <div className="flex gap-3 items-start">
         <img
           src={avatar}
           alt={username}
-          className="object-cover rounded-full w-9 h-9"
+          className="object-cover rounded-full w-9 h-9 border border-transparent group-hover:border-gray-500/50 transition-colors"
         />
-        <div>
-          <h3 className="mb-1 text-base font-semibold leading-tight text-white line-clamp-2 group-hover:text-blue-400">
+        <div className="flex-1 min-w-0">
+          <h3 className="mb-1 text-[15px] font-semibold leading-snug text-white line-clamp-2 group-hover:text-white/90">
             {video?.title}
           </h3>
-          <div className="flex items-center gap-1 text-sm text-gray-400">
-            <span>{fullName || username}</span>
-            {/* 
-            // verified not in Video type yet
-            {video?.verified && (
-              <CircleCheck className="w-3.5 h-3.5 text-gray-400 fill-current" />
-            )} 
-            */}
-          </div>
           <div className="text-sm text-gray-400">
-            {video.views} views • {timeAgo(video?.createdAt)}
+            <div className="hover:text-gray-300 transition-colors truncate">
+              {fullName || username}
+            </div>
+            <div className="flex items-center text-xs mt-0.5 text-gray-400/80">
+              <span className="text-gray-400">{video.views} views</span>
+              <span className="mx-1">•</span>
+              <span className="text-gray-400">{timeAgo(video?.createdAt)}</span>
+            </div>
           </div>
         </div>
-        <button className="self-start ml-auto opacity-0 group-hover:opacity-100">
-          <EllipsisVertical className="w-5 h-5 text-gray-300" />
+        <button className="opacity-0 group-hover:opacity-100 p-1 hover:bg-white/10 rounded-full transition-all duration-200">
+          <EllipsisVertical className="w-4 h-4 text-white" />
         </button>
       </div>
-    </>
+    </div>
   );
 }
 

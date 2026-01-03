@@ -31,7 +31,7 @@ export default function Profile() {
   });
   useEffect(() => {
     setVideos([]);
-  });
+  }, []);
 
   function handleEditClick() {
     navigate("/settings");
@@ -63,9 +63,19 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-black text-white w-full">
-      <div className="w-full h-32 md:h-48 lg:h-64 bg-gradient-to-r from-pink-500 via-orange-400 to-cyan-400"></div>
+      {user?.coverImage?.url ? (
+        <div className="w-full h-32 md:h-48 lg:h-64 relative">
+          <img
+            src={user.coverImage.url}
+            alt="Cover"
+            className="w-full h-full object-cover"
+          />
+        </div>
+      ) : (
+        <div className="w-full h-32 md:h-48 lg:h-64 bg-gradient-to-r from-pink-500 via-orange-400 to-cyan-400"></div>
+      )}
 
-      <div className="px-4 md:px-8 -mt-10 md:-mt-16 mb-8">
+      <div className="px-4 md:px-8 -mt-10 md:-mt-16 mb-8 relative z-10">
         <div className="flex flex-col md:flex-row items-center md:items-end gap-4 md:gap-6">
           <div className="relative group">
             <img
@@ -99,7 +109,7 @@ export default function Profile() {
           <div className="mt-4 md:mt-0 mb-4 md:mb-6 shrink-0">
             <button
               onClick={handleEditClick}
-              className="flex items-center gap-2 px-6 py-2 bg-[#a855f7] hover:bg-[#9333ea] text-white font-medium rounded-lg transition-colors"
+              className="flex items-center gap-2 px-6 py-2 bg-[#2a2a2a] hover:bg-[#3f3f3f] text-white px-8 py-2.5 rounded-xl text-sm font-semibold transition-all"
             >
               <Edit2 size={16} />
               <span>Edit</span>
@@ -108,17 +118,18 @@ export default function Profile() {
         </div>
       </div>
 
+
+
       <div className="border-b border-gray-800 px-4 md:px-8">
         <div className="flex items-center gap-6 md:gap-10 overflow-x-auto no-scrollbar">
           {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`pb-3 text-sm md:text-base font-medium whitespace-nowrap relative px-2 transition-colors ${
-                activeTab === tab
-                  ? "text-white"
-                  : "text-gray-500 hover:text-gray-300"
-              }`}
+              className={`pb-3 text-sm md:text-base font-medium whitespace-nowrap relative px-2 transition-colors ${activeTab === tab
+                ? "text-white"
+                : "text-gray-500 hover:text-gray-300"
+                }`}
             >
               {tab}
               {activeTab === tab && (
@@ -136,11 +147,10 @@ export default function Profile() {
               <button
                 key={filter}
                 onClick={() => setActiveFilter(filter)}
-                className={`px-4 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                  activeFilter === filter
-                    ? "bg-purple-600 text-white"
-                    : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                }`}
+                className={`px-4 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${activeFilter === filter
+                  ? "bg-[#2a2a2a] hover:bg-[#3f3f3f] text-white px-8 py-2.5 rounded-xl text-sm font-semibold transition-all"
+                  : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                  }`}
               >
                 {filter}
               </button>
@@ -150,7 +160,7 @@ export default function Profile() {
           {videos.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <div className="w-16 h-16 bg-purple-500/10 rounded-full flex items-center justify-center mb-4">
-                <Play className="w-8 h-8 text-purple-500 fill-current" />
+                <Play className="w-8 h-8 text-white fill-current" />
               </div>
               <h3 className="text-xl font-bold text-white mb-2">
                 No videos uploaded
@@ -160,7 +170,7 @@ export default function Profile() {
               </p>
               <button
                 onClick={() => setIsUploadModalOpen(true)}
-                className="flex items-center gap-2 px-6 py-3 bg-[#a855f7] hover:bg-[#9333ea] text-white font-medium rounded-lg transition-colors"
+                className="flex items-center gap-2 px-6 py-3 bg-[#2a2a2a] hover:bg-[#3f3f3f] text-white px-8 py-2.5 rounded-xl text-sm font-semibold transition-all"
               >
                 <Plus size={20} />
                 <span>New video</span>
@@ -198,7 +208,7 @@ export default function Profile() {
       <UploadVideoModal
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
-        onUploadSuccess={() => {}}
+        onUploadSuccess={() => { }}
       />
 
       {activeTab !== "Videos" && (

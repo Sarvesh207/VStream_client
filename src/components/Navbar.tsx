@@ -56,7 +56,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
             <Menu className="w-6 h-6" />
           </button>
           <Link to="/" className="flex items-center gap-2">
-            <div className="flex items-center justify-center w-10 h-10 text-white bg-gradient-to-br from-purple-600 to-blue-500 rounded-full">
+            <div className="flex items-center justify-center w-10 h-10 text-black bg-white rounded-xl">
               <Video className="w-5 h-5 fill-current" />
             </div>
             <span className="hidden text-xl font-bold tracking-tight text-white sm:block font-display">
@@ -73,7 +73,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
             </div>
             <input
               type="search"
-              className="block w-full p-2.5 pl-10 text-sm text-white bg-gray-900 border border-gray-700 rounded-full focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-500 outline-none transition-all"
+              className="block w-full p-2.5 pl-10 text-sm text-white bg-[#1a1a1a] border border-gray-800 rounded-full focus:ring-1 focus:ring-white/20 focus:border-white/20 placeholder-gray-500 outline-none transition-all"
               placeholder="Search"
             />
           </div>
@@ -94,7 +94,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
             <div className="relative">
               <button
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center justify-center w-10 h-10 overflow-hidden  rounded-full focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="flex items-center justify-center w-10 h-10 overflow-hidden  rounded-full focus:ring-1 focus:ring-white/20 focus:outline-none"
               >
                 {user.avatar ? (
                   <img
@@ -160,7 +160,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
 
               <Link
                 to="/register"
-                className="px-4 py-2 text-sm font-medium text-black transition-colors bg-purple-500 rounded-full hover:bg-purple-400"
+                className="px-4 py-2 text-sm font-medium text-white transition-colors bg-[#2a2a2a] rounded-full hover:bg-[#3f3f3f]"
               >
                 Sign up
               </Link>

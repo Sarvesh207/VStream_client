@@ -26,10 +26,10 @@ export default function Sidebar({ isOpen }: SidebarProps) {
         to={item.path}
         className={({ isActive }) =>
           `flex items-center p-3 text-base font-medium rounded-lg group transition-all duration-200 border border-transparent
-           ${isActive 
-             ? 'bg-gray-800 text-white border-gray-700' 
-             : 'text-gray-400 hover:bg-gray-900 hover:text-white hover:border-gray-800'
-           } ${isOpen ? 'justify-start' : 'justify-center'}`
+           ${isActive
+            ? 'bg-gray-800 text-white border-gray-700'
+            : 'text-gray-400 hover:bg-gray-900 hover:text-white hover:border-gray-800'
+          } ${isOpen ? 'justify-start' : 'justify-center'}`
         }
         title={!isOpen ? item.label : ''}
       >
@@ -42,13 +42,13 @@ export default function Sidebar({ isOpen }: SidebarProps) {
   );
 
   return (
-    <aside 
+    <aside
       className={`fixed top-0 left-0 z-40 h-screen pt-20 transition-all duration-300 bg-black border-r border-gray-800 hidden sm:block
         ${isOpen ? 'w-64 translate-x-0' : 'w-20 translate-x-0'}
       `}
     >
       <div className="h-full px-3 pb-4 overflow-y-auto bg-black flex flex-col justify-between scrollbar-hide">
-        
+
         {/* Main Menu */}
         <ul className="space-y-2 font-medium mt-4">
           {menuItems.map((item) => (
@@ -58,11 +58,11 @@ export default function Sidebar({ isOpen }: SidebarProps) {
 
         {/* Bottom Menu */}
         <div className={`pt-4 mt-4 border-t border-gray-800 ${isOpen ? '' : 'flex flex-col items-center'}`}>
-           <ul className="space-y-2 font-medium w-full">
+          <ul className="space-y-2 font-medium w-full">
             {bottomItems.map((item) => (
-                <NavItem key={item.label} item={item} />
+              <NavItem key={item.label} item={item} />
             ))}
-           </ul>
+          </ul>
         </div>
       </div>
     </aside>
