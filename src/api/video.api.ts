@@ -22,4 +22,10 @@ const publishVideo = async (
   return res.data;
 };
 
-export { getAllVideos, getVideoById, publishVideo };
+const getMyVideos = async (page: number = 1): Promise<FeedPage> => {
+  const res = await client.get(`/videos/user/videos?page=${page}`);
+
+  return res.data.data;
+};
+
+export { getAllVideos, getVideoById, publishVideo, getMyVideos };

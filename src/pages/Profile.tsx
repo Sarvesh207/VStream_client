@@ -1,24 +1,19 @@
-import { useEffect, useState } from "react";
-import { Edit2, CheckCircle, Play, Plus } from "lucide-react";
-import UploadVideoModal from "../components/UploadVideoModal";
-import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
-import { getUserChannelData } from "../api/user.api";
-import { Loader2 } from "lucide-react";
+import { CheckCircle, Edit2, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { getUserChannelData } from "../api/user.api";
+import MyVideos from "../components/ui/MyVideos";
+import UploadVideoModal from "../components/UploadVideoModal";
 import type { RootState } from "../store/store";
-import type { Video } from "../api/types";
 
 export default function Profile() {
-  const [activeTab, setActiveTab] = useState("Videos");
-  const [activeFilter, setActiveFilter] = useState("Previously uploaded");
   const user = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
-  const tabs = ["Videos", "Playlist", "Tweets", "Following"];
-  const videoFilters = ["Previously uploaded", "Oldest", "Item"];
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
-  const [videos, setVideos] = useState<Video[]>([]);
+
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   const {
     data: userChannelData,
@@ -29,9 +24,6 @@ export default function Profile() {
     queryFn: () => getUserChannelData(user?.username || ""),
     enabled: !!user?.username,
   });
-  useEffect(() => {
-    setVideos([]);
-  }, []);
 
   function handleEditClick() {
     navigate("/settings");
@@ -118,104 +110,19 @@ export default function Profile() {
         </div>
       </div>
 
-
-
-      <div className="border-b border-gray-800 px-4 md:px-8">
-        <div className="flex items-center gap-6 md:gap-10 overflow-x-auto no-scrollbar">
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`pb-3 text-sm md:text-base font-medium whitespace-nowrap relative px-2 transition-colors ${activeTab === tab
-                ? "text-white"
-                : "text-gray-500 hover:text-gray-300"
-                }`}
-            >
-              {tab}
-              {activeTab === tab && (
-                <div className="absolute bottom-0 left-0 w-full h-1 bg-white rounded-t-full"></div>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {activeTab === "Videos" && (
-        <div className="p-4 md:p-8">
-          <div className="flex items-center gap-3 mb-6 overflow-x-auto no-scrollbar pb-2">
-            {videoFilters.map((filter) => (
-              <button
-                key={filter}
-                onClick={() => setActiveFilter(filter)}
-                className={`px-4 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${activeFilter === filter
-                  ? "bg-[#2a2a2a] hover:bg-[#3f3f3f] text-white px-8 py-2.5 rounded-xl text-sm font-semibold transition-all"
-                  : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                  }`}
-              >
-                {filter}
-              </button>
-            ))}
-          </div>
-
-          {videos.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-16 h-16 bg-purple-500/10 rounded-full flex items-center justify-center mb-4">
-                <Play className="w-8 h-8 text-white fill-current" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">
-                No videos uploaded
-              </h3>
-              <p className="text-gray-400 max-w-sm mb-8">
-                Click to upload new video. You have yet to upload a video.
-              </p>
-              <button
-                onClick={() => setIsUploadModalOpen(true)}
-                className="flex items-center gap-2 px-6 py-3 bg-[#2a2a2a] hover:bg-[#3f3f3f] text-white px-8 py-2.5 rounded-xl text-sm font-semibold transition-all"
-              >
-                <Plus size={20} />
-                <span>New video</span>
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {videos.map((video) => (
-                <div key={video._id} className="group cursor-pointer">
-                  <div className="relative aspect-video rounded-xl overflow-hidden mb-3">
-                    <img
-                      src={
-                        typeof video.thumbnail === "string"
-                          ? video.thumbnail
-                          : video.thumbnail?.url
-                      }
-                      alt={video.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
-                  </div>
-                  <h3 className="font-semibold text-white leading-snug mb-1 line-clamp-2 group-hover:text-purple-400 transition-colors">
-                    {video.title}
-                  </h3>
-                  <div className="text-xs text-gray-400">
-                    {video.views} • {video.createdAt}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+      <MyVideos setIsUploadModalOpen={setIsUploadModalOpen} />
 
       <UploadVideoModal
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
-        onUploadSuccess={() => { }}
+        onUploadSuccess={() => {}}
       />
 
-      {activeTab !== "Videos" && (
+      {/* {activeTab !== "Videos" && (
         <div className="p-12 text-center text-gray-500">
           Content for {activeTab} tab
         </div>
-      )}
+      )} */}
     </div>
   );
 }
