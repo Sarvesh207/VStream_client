@@ -37,11 +37,10 @@ function MyVideos({ setIsUploadModalOpen }: MyVideosProps) {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`pb-3 text-sm md:text-base font-medium whitespace-nowrap relative px-2 transition-colors ${
-                activeTab === tab
+              className={`pb-3 text-sm md:text-base font-medium whitespace-nowrap relative px-2 transition-colors ${activeTab === tab
                   ? "text-white"
                   : "text-gray-500 hover:text-gray-300"
-              }`}
+                }`}
             >
               {tab}
               {activeTab === tab && (
@@ -54,20 +53,30 @@ function MyVideos({ setIsUploadModalOpen }: MyVideosProps) {
 
       {activeTab === "Videos" && (
         <div className="p-4 md:p-8">
-          <div className="flex items-center gap-3 mb-6 overflow-x-auto no-scrollbar pb-2">
-            {videoFilters.map((filter) => (
+          <div className="flex items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-3 overflow-x-auto no-scrollbar pb-2">
+              {videoFilters.map((filter) => (
+                <button
+                  key={filter}
+                  onClick={() => setActiveFilter(filter)}
+                  className={`px-4 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${activeFilter === filter
+                      ? "bg-[#2a2a2a] hover:bg-[#3f3f3f] text-white px-8 py-2.5 rounded-xl text-sm font-semibold transition-all"
+                      : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                    }`}
+                >
+                  {filter}
+                </button>
+              ))}
+            </div>
+            {videos && videos.length > 0 && (
               <button
-                key={filter}
-                onClick={() => setActiveFilter(filter)}
-                className={`px-4 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                  activeFilter === filter
-                    ? "bg-[#2a2a2a] hover:bg-[#3f3f3f] text-white px-8 py-2.5 rounded-xl text-sm font-semibold transition-all"
-                    : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                }`}
+                onClick={() => setIsUploadModalOpen(true)}
+                className="flex items-center gap-2 bg-[#2a2a2a] hover:bg-[#3f3f3f] text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all shrink-0"
               >
-                {filter}
+                <Plus size={18} />
+                <span>New video</span>
               </button>
-            ))}
+            )}
           </div>
 
           {videos && videos.length === 0 ? (

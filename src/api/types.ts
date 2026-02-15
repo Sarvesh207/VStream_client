@@ -124,3 +124,12 @@ export interface ChangePasswordData {
   oldPassword?: string;
   newPassword?: string;
 }
+
+export interface UpdateVideoData {
+  title?: string;
+  description?: string;
+  thumbnail?: {
+    url: string;
+    public_id: string;
+  };
+}

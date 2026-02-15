@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { Video } from "lucide-react";
+import { Video, Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { loginUser } from "../api/user.api";
 import { setAccessToken } from "../api/axiosClient";
 import { useMutation } from "@tanstack/react-query";
@@ -23,6 +24,8 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
@@ -117,7 +120,7 @@ export default function Login() {
                 </p>
               )}
             </div>
-            <div>
+            <div className="relative">
               <label
                 htmlFor="password"
                 className="block mb-2 text-sm font-medium text-gray-300"
@@ -125,12 +128,19 @@ export default function Login() {
                 Password
               </label>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 placeholder="••••••••"
-                className="bg-[#1a1a1a] border border-gray-800 text-white sm:text-sm rounded-lg focus:ring-1 focus:ring-white/20 focus:border-white/20 block w-full p-2.5 placeholder-gray-500"
+                className="bg-[#1a1a1a] border border-gray-800 text-white sm:text-sm rounded-lg focus:ring-1 focus:ring-white/20 focus:border-white/20 block w-full p-2.5 placeholder-gray-500 pr-10"
                 {...register("password", { required: "Password is required" })}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 pt-7 text-gray-400 hover:text-white"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
               {errors.password && (
                 <p className="text-red-500 text-xs mt-1">
                   {errors.password.message}
