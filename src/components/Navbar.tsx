@@ -7,6 +7,7 @@ import {
   User,
   LogOut,
   Settings,
+  ChartNoAxesCombined
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -128,6 +129,14 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
                       Profile
                     </Link>
 
+                    <Link
+                      to="/analytics"
+                      className="flex items-center px-3 py-2.5 text-sm font-medium text-gray-400 rounded-lg border border-transparent hover:bg-gray-900 hover:text-white hover:border-gray-800 transition-all duration-200 group"
+                      onClick={() => setIsProfileOpen(false)}
+                    >
+                      <ChartNoAxesCombined className="w-5 h-5 mr-3 group-hover:text-white transition-colors" />
+                      Analytics
+                    </Link>
                     <Link
                       to="/settings"
                       className="flex items-center px-3 py-2.5 text-sm font-medium text-gray-400 rounded-lg border border-transparent hover:bg-gray-900 hover:text-white hover:border-gray-800 transition-all duration-200 group"

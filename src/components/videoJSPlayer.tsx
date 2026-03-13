@@ -33,12 +33,12 @@ const VideoJS = (props: VideoJSProps) => {
           }
         ));
 
-        // ✅ CORRECT way
+        // Initialize the httpSourceSelector plugin
         player.ready(() => {
           // @ts-ignore
-          if (player.controlBar.addChild) {
+          if (typeof player.httpSourceSelector === 'function') {
             // @ts-ignore
-            player.controlBar.addChild("HttpSourceSelector", {});
+            player.httpSourceSelector();
           }
         });
       }

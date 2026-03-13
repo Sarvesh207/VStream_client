@@ -8,104 +8,85 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import UploadVideoModal from "../components/UploadVideoModal";
-
-interface DashboardVideo {
-  id: string;
-  title: string;
-  thumbnail: string;
-  status: "Published" | "Unpublished";
-  likes: number;
-  dislikes: number;
-  dateUploaded: string;
-}
+import EditVideoModal from "../components/EditVideoModal";
+import DeleteConfirmModal from "../components/DeleteConfirmModal";
+import { useSelector } from "react-redux";
+import type { RootState } from "../store/store";
+import { getMyVideos } from "../api/video.api";
+import { useQuery } from "@tanstack/react-query";
+import { formatDate } from "../utils/formateDate";
+import { useTogglePublishStatus } from "../hooks/useVideoMutations";
+import type { Video } from "../api/types";
 
 export default function Dashboard() {
+  const user = useSelector((state: RootState) => state.user);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  const [videos, setVideos] = useState<DashboardVideo[]>([
-    {
-      id: "1",
-      title: "Cardi B - WAP feat. Megan Thee Stallion [Official Video]",
-      thumbnail:
-        "https://images.unsplash.com/photo-1619983081593-e431bd73ea91?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80",
-      status: "Published",
-      likes: 367,
-      dislikes: 4767,
-      dateUploaded: "9/23/16",
-    },
-    {
-      id: "2",
-      title: "H.E.R. - Damage (Official Video)",
-      thumbnail:
-        "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80",
-      status: "Unpublished",
-      likes: 367,
-      dislikes: 4767,
-      dateUploaded: "8/15/17",
-    },
-    {
-      id: "3",
-      title: "Queen - Bohemian Rhapsody (Official Video Remastered)",
-      thumbnail:
-        "https://images.unsplash.com/photo-1516280440614-6697288d5d38?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80",
-      status: "Published",
-      likes: 367,
-      dislikes: 4767,
-      dateUploaded: "5/27/15",
-    },
-    {
-      id: "4",
-      title: "88RISING - Midsummer Madness ft. Joji, Rich Brian",
-      thumbnail:
-        "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80",
-      status: "Published",
-      likes: 367,
-      dislikes: 4767,
-      dateUploaded: "9/4/12",
-    },
-    {
-      id: "5",
-      title: "Ariana Grande - positions",
-      thumbnail:
-        "https://images.unsplash.com/photo-1514525253440-b393452e3383?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80",
-      status: "Unpublished",
-      likes: 367,
-      dislikes: 4767,
-      dateUploaded: "12/4/17",
-    },
-  ]);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
 
-  const toggleStatus = (id: string) => {
-    setVideos(
-      videos.map((v) =>
-        v.id === id
-          ? {
-              ...v,
-              status: v.status === "Published" ? "Unpublished" : "Published",
-            }
-          : v
-      )
-    );
+  // Track which video is currently toggling
+  const [togglingVideoId, setTogglingVideoId] = useState<string | null>(null);
+
+  const togglePublishMutation = useTogglePublishStatus();
+
+  const {
+    data: myVideoData,
+    isLoading: videoLoading,
+    error: videoError,
+  } = useQuery({
+    queryKey: ["getMyVideos", user?.username],
+    queryFn: () => getMyVideos(1, 10, "", "createdAt", "desc", "", "all"),
+    enabled: !!user?.username,
+  });
+
+  const { videos } = myVideoData || {};
+
+  const handleTogglePublish = (videoId: string) => {
+    setTogglingVideoId(videoId);
+    togglePublishMutation.mutate(videoId, {
+      onSettled: () => {
+        setTogglingVideoId(null);
+      },
+    });
   };
 
-  const deleteVideo = (id: string) => {
-    if (confirm("Are you sure you want to delete this video?")) {
-      setVideos(videos.filter((v) => v.id !== id));
-    }
+  const handleEditClick = (video: Video) => {
+    setSelectedVideo(video);
+    setIsEditModalOpen(true);
   };
+
+  const handleDeleteClick = (video: Video) => {
+    setSelectedVideo(video);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedVideo(null);
+  };
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setSelectedVideo(null);
+  };
+
+  if (videoLoading) return <div className="min-h-screen bg-black text-white p-6 flex items-center justify-center">Loading...</div>;
+
+  if (videoError) return <div className="min-h-screen bg-black text-white p-6">Error: {videoError.message}</div>;
 
   return (
     <div className="min-h-screen bg-black text-white p-6 md:p-8">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
         <div>
-          <h1 className="text-3xl font-bold mb-1">Welcome back, Olivia</h1>
+          <h1 className="text-3xl font-bold mb-1">Welcome back, {user?.fullName}</h1>
           <p className="text-gray-400 text-sm">
-            Track, manage and forecast your customers and orders.
-          </p>
+            Measure video reach, watch time, and audience behavior effortlessly.</p>
         </div>
         <button
           onClick={() => setIsUploadModalOpen(true)}
-          className="flex items-center gap-2 bg-[#a855f7] hover:bg-[#9333ea] text-white px-5 py-2.5 rounded-lg font-medium transition-colors w-fit"
+          className="flex items-center gap-2 bg-white hover:bg-gray-200 text-black px-5 py-2.5 rounded-lg font-medium transition-colors w-fit"
         >
           <Plus size={20} />
           Upload Video
@@ -116,8 +97,8 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         {/* Total Views */}
         <div className="bg-black border border-gray-800 p-6 rounded-xl">
-          <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center mb-4">
-            <Eye className="text-purple-400 w-5 h-5" />
+          <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-4">
+            <Eye className="text-white w-5 h-5" />
           </div>
           <p className="text-gray-400 text-sm mb-1">Total Views</p>
           <h2 className="text-3xl font-bold">221,234</h2>
@@ -125,8 +106,8 @@ export default function Dashboard() {
 
         {/* Total Followers */}
         <div className="bg-black border border-gray-800 p-6 rounded-xl">
-          <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center mb-4">
-            <Users className="text-blue-400 w-5 h-5" />
+          <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-4">
+            <Users className="text-white w-5 h-5" />
           </div>
           <p className="text-gray-400 text-sm mb-1">Total Followers</p>
           <h2 className="text-3xl font-bold">4,053</h2>
@@ -134,8 +115,8 @@ export default function Dashboard() {
 
         {/* Total Likes */}
         <div className="bg-black border border-gray-800 p-6 rounded-xl relative overflow-hidden">
-          <div className="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center mb-4">
-            <Heart className="text-pink-400 w-5 h-5" />
+          <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-4">
+            <Heart className="text-white w-5 h-5" />
           </div>
           <p className="text-gray-400 text-sm mb-1">Total Likes</p>
           <h2 className="text-3xl font-bold">63,021</h2>
@@ -153,36 +134,52 @@ export default function Dashboard() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-gray-800 text-gray-400 text-xs uppercase tracking-wider">
-                <th className="p-4 font-medium">Status</th>
+                <th className="p-4 font-medium">Publish Status</th>
                 <th className="p-4 font-medium">Status</th>
                 <th className="p-4 font-medium">Uploaded</th>
-                <th className="p-4 font-medium">Rating</th>
                 <th className="p-4 font-medium">Date uploaded</th>
                 <th className="p-4 font-medium text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800">
-              {videos.map((video) => (
+              {videos && videos.map((video) => (
                 <tr
-                  key={video.id}
+                  key={video._id}
                   className="group hover:bg-gray-900/50 transition-colors"
                 >
                   {/* Toggle Switch Column */}
                   <td className="p-4">
                     <button
-                      onClick={() => toggleStatus(video.id)}
-                      className={`w-11 h-6 rounded-full relative transition-colors duration-200 ease-in-out ${
-                        video.status === "Published"
-                          ? "bg-purple-600"
-                          : "bg-gray-600"
-                      }`}
+                      onClick={() => handleTogglePublish(video._id)}
+                      disabled={togglingVideoId === video._id}
+                      className={`
+                        relative w-12 h-6 rounded-full transition-all duration-300 ease-in-out
+                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black
+                        disabled:opacity-60 disabled:cursor-not-allowed
+                        ${video.isPublished
+                          ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] ring-1 ring-emerald-400/50"
+                          : "bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.3)] ring-1 ring-rose-400/50"
+                        }
+                      `}
+                      role="switch"
+                      aria-checked={video.isPublished}
+                      aria-label={`Toggle publish status for ${video.title}`}
                     >
+                      {/* Loading spinner overlay */}
+                      {togglingVideoId === video._id && (
+                        <span className="absolute inset-0 flex items-center justify-center">
+                          <span className="animate-spin h-3 w-3 border-2 border-white border-t-transparent rounded-full"></span>
+                        </span>
+                      )}
+
+                      {/* Toggle knob */}
                       <span
-                        className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform duration-200 ${
-                          video.status === "Published"
-                            ? "translate-x-5"
-                            : "translate-x-0"
-                        }`}
+                        className={`
+                          absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-md
+                          transition-transform duration-300 ease-in-out
+                          ${video.isPublished ? "translate-x-6" : "translate-x-0"}
+                          ${togglingVideoId === video._id ? "opacity-0" : "opacity-100"}
+                        `}
                       />
                     </button>
                   </td>
@@ -190,13 +187,12 @@ export default function Dashboard() {
                   {/* Status Badge Column */}
                   <td className="p-4">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs border ${
-                        video.status === "Published"
-                          ? "border-green-500/30 text-green-400 bg-green-500/10"
-                          : "border-orange-500/30 text-orange-400 bg-orange-500/10"
-                      }`}
+                      className={`px-3 py-1 rounded-full text-xs border ${video.isPublished === true
+                        ? "border-green-500/30 text-green-400 bg-green-500/10"
+                        : "border-orange-500/30 text-orange-400 bg-orange-500/10"
+                        }`}
                     >
-                      {video.status}
+                      {video.isPublished ? "Published" : "Unpublished"}
                     </span>
                   </td>
 
@@ -204,44 +200,36 @@ export default function Dashboard() {
                   <td className="p-4">
                     <div className="flex items-center gap-3 min-w-[240px]">
                       <img
-                        src={video.thumbnail}
+                        src={video.thumbnail.url}
                         alt=""
                         className="w-10 h-10 rounded-full object-cover"
                       />
-                      <span className="text-sm font-medium text-white truncate max-w-[200px]">
+                      <span title={video.title} className="text-sm font-medium text-white truncate max-w-[200px]">
                         {video.title}
-                      </span>
-                    </div>
-                  </td>
-
-                  {/* Rating */}
-                  <td className="p-4">
-                    <div className="flex items-center gap-2 text-xs bg-gray-900 w-fit px-2 py-1 rounded">
-                      <span className="text-green-400">
-                        {video.likes} likes
-                      </span>
-                      <span className="text-gray-600">|</span>
-                      <span className="text-red-400">
-                        {video.dislikes} Dislikes
                       </span>
                     </div>
                   </td>
 
                   {/* Date Uploaded */}
                   <td className="p-4 text-sm text-gray-400 whitespace-nowrap">
-                    {video.dateUploaded}
+                    {formatDate(video.createdAt)}
                   </td>
 
                   {/* Actions */}
                   <td className="p-4 text-right">
                     <div className="flex items-center justify-end gap-3">
                       <button
-                        onClick={() => deleteVideo(video.id)}
+                        onClick={() => handleDeleteClick(video)}
                         className="text-gray-500 hover:text-red-500 transition-colors p-1"
+                        aria-label={`Delete ${video.title}`}
                       >
                         <Trash2 size={18} />
                       </button>
-                      <button className="text-gray-500 hover:text-white transition-colors p-1">
+                      <button
+                        onClick={() => handleEditClick(video)}
+                        className="text-gray-500 hover:text-white transition-colors p-1"
+                        aria-label={`Edit ${video.title}`}
+                      >
                         <Edit2 size={18} />
                       </button>
                     </div>
@@ -253,9 +241,22 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Modals */}
       <UploadVideoModal
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
+      />
+
+      <EditVideoModal
+        isOpen={isEditModalOpen}
+        onClose={closeEditModal}
+        video={selectedVideo}
+      />
+
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        video={selectedVideo}
       />
     </div>
   );
