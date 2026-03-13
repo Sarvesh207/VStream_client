@@ -27,7 +27,7 @@ function MyVideos({ setIsUploadModalOpen }: MyVideosProps) {
     enabled: !!user?.username,
   });
 
-  const { videos, pagination } = myVideoData || {};
+  const { videos } = myVideoData || {};
   console.log(videos, videoLoading, videoError, myVideoData);
   return (
     <>

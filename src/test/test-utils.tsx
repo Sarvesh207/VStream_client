@@ -3,7 +3,7 @@ import { render, type RenderOptions } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import userReducer from '../store/slices/userSlice';
 
 // Create a custom render function that includes providers
@@ -17,9 +17,9 @@ export function renderWithProviders(
     {
         preloadedState = {},
         store = configureStore({
-            reducer: {
+            reducer: combineReducers({
                 user: userReducer,
-            },
+            }),
             preloadedState,
         }),
         ...renderOptions
