@@ -37,15 +37,14 @@ export interface Video {
   duration: number;
   views: number;
   isPublished: boolean;
-
   owner: VideoOwner;
-
   thumbnail: Media;
   videoFile: Media;
-
   createdAt: string; // ISO date
   updatedAt: string;
   __v: number;
+  likeCount?: number;
+  isLikedByMe?: boolean;
 }
 
 export interface GetVideosResponse {

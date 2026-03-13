@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import SaveToPlaylistModal from "../components/SaveToPlaylistModal";
 import VideoJS from "../components/videoJSPlayer";
 import useVideoById from "../hooks/useVideoById";
+import useToggleVideoLike from "../hooks/useToggleVideoLike";
 import { timeAgo } from "../utils/timeAgo";
 
 export default function VideoDetail() {
@@ -18,13 +19,19 @@ export default function VideoDetail() {
 
   // React Query 
   const { data: video, isLoading, isError } = useVideoById(id || "");
+  const toggleLikeMutation = useToggleVideoLike();
 
   const playerRef = useRef(null);
+
+
 
   if (isLoading) return <div className="flex items-center justify-center p-20 text-gray-400">Loading...</div>;
   if (isError || !video) return <div className="flex items-center justify-center p-20 text-red-400">Video unavailable.</div>;
 
   const { title, videoFile, views, createdAt, description, owner } = video;
+
+  const displayLiked = video.isLikedByMe ?? false;
+  const displayLikesCount = video.likeCount ?? 0;
 
   const videoUrl = typeof videoFile === "string" ? videoFile : videoFile?.url;
   const ownerAvatar = typeof owner === "string" ? undefined : owner?.avatar?.url;
@@ -41,6 +48,11 @@ export default function VideoDetail() {
 
   const handlePlayerReady = (player: any) => {
     playerRef.current = player;
+  };
+
+  const handleLike = () => {
+    if (!id) return;
+    toggleLikeMutation.mutate(id);
   };
 
   const formatViews = (count = 0) => {
@@ -68,8 +80,8 @@ export default function VideoDetail() {
               <span>{formatViews(views)} views</span>
             </div>
             <div className="flex items-center gap-1.5 text-[#ff4e4e]">
-              <Heart size={14} fill="currentColor" />
-              <span>620 likes</span>
+              <Heart size={14} fill={displayLiked ? "currentColor" : "none"} />
+              <span>{displayLikesCount} likes</span>
             </div>
           </div>
 
@@ -87,8 +99,8 @@ export default function VideoDetail() {
               <button className="hover:text-gray-300 transition-colors" title="Share">
                 <Send size={24} strokeWidth={1.5} className="-rotate-45 mb-1" />
               </button>
-              <button className="hover:text-gray-300 transition-colors" title="Like">
-                <Heart size={26} strokeWidth={1.5} />
+              <button onClick={handleLike} className={`${displayLiked ? "text-[#ff4e4e]" : "hover:text-gray-300"} transition-colors`} title={displayLiked ? "Unlike" : "Like"}>
+                <Heart size={26} strokeWidth={1.5} fill={displayLiked ? "currentColor" : "none"} />
               </button>
             </div>
           </div>
